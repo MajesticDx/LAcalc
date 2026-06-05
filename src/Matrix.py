@@ -26,6 +26,38 @@ class Matrix:
         result_rows = [self.rows[i] + other.rows[i] for i in range(len(self.rows))]
         return Matrix(result_rows)
 
+    def __sub__(self, other):
+        if self.shape != other.shape:
+            raise ValueError("Matrices must have the same shape for subtraction.")
+        result_rows = [self.rows[i] - other.rows[i] for i in range(len(self.rows))]
+        return Matrix(result_rows)
+
+    def __mul__(self, other):
+        if not isinstance(other, (int, float)):
+            raise ValueError("Matrix can only be multiplied by a scalar.")
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
+    def __matmul__(self, other):
+        if self.shape[1] != other.shape[0]:
+            raise ValueError("Number of 1. Matrix columns must equal the number of 2. Matrix rows for multiplication.")
+        result_rows = []
+        for v in range(self.shape[0]):
+            result_values = array.array('d')
+            for i in range(other.shape[1]):
+                result_value = sum(self.rows[v][k] * other.rows[k][i] for k in range(self.shape[1]))
+                result_values.append(result_value)
+            result_rows.append(Vector(result_values))
+        return Matrix(result_rows)
+
+    def transpose(self):
+        transposed_rows = []
+        for i in range(self.shape[1]):
+            transposed_values = array.array('d', (self.rows[j][i] for j in range(self.shape[0])))
+            transposed_rows.append(Vector(transposed_values))
+        return Matrix(transposed_rows)
+
     def is_square(self):
         return self.shape[0] == self.shape[1]
 

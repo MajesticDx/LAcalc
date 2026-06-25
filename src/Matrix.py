@@ -35,6 +35,7 @@ class Matrix:
     def __mul__(self, other):
         if not isinstance(other, (int, float)):
             raise ValueError("Matrix can only be multiplied by a scalar.")
+        result_rows = [row * other for row in self.rows]
 
     def __rmul__(self, other):
         return self.__mul__(other)
@@ -73,3 +74,36 @@ class Matrix:
 
     def __str__(self):
         return "\n".join([str(row) for row in self.rows])
+
+    def trace(self):
+        if not self.is_square():
+            raise ValueError("Spur can only be calculated for square matrices.")
+        return sum(self.rows[i][i] for i in range(self.shape[0]))
+
+    # with laplace expansion
+    def determinant(self):
+        if not self.is_square():
+            raise ValueError("Determinant can only be calculated for square matrices.")
+        if self.shape[0] == 1:
+            return self.rows[0][0]
+        if self.shape[0] == 2:
+            return self.rows[0][0] * self.rows[1][1] - self.rows[0][1] * self.rows[1][0]
+        det = 0
+        for row_index in range(self.shape[0]):
+            multiplicant = ((-1) ** row_index) * self.rows[row_index][0]
+            sub_matrix = self.create_sub_matrix(0, row_index)
+            det += multiplicant * sub_matrix.determinant()
+
+        return det
+
+    # creates a matrix with a column and row cut out
+    def create_sub_matrix(self, column, row):
+        sub_matrix_rows = []
+        for i in range(self.shape[0]):
+            if i == row:
+                continue
+            sub_row_values = array.array('d', (self.rows[i][j] for j in range(self.shape[1]) if j != column))
+            sub_matrix_rows.append(Vector(sub_row_values))
+        return Matrix(sub_matrix_rows)
+
+

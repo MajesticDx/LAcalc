@@ -1,12 +1,14 @@
 from src.Matrix import Matrix
 from src.Vector import Vector
 
-a = Vector([1.0, 2.0, 3.0])
-b = Vector([4.0, 5.0, 6.0])
-c = Vector([1.0, 2.0])
-d = Vector([3.0, 4.0])
-x = Matrix([a, b])
-z = Matrix([c, d])
+matrix1_rows = [
+    [2, 3, 1, 5, 2],
+    [3, 1, 4, 2, 1],
+    [1, 5, 2, 3, 4],
+    [4, 2, 3, 1, 5],
+    [5, 4, 1, 2, 3]
+]
+matrix1 = Matrix(matrix1_rows)
 
-print(z @ x)
-print(x.transpose())
+print(matrix1.determinant())
+print(matrix1.spur())
